@@ -33,6 +33,21 @@ RUN \
   echo "deb http://packages.elastic.co/kibana/$KIBANA_VERSION/debian stable main" | tee -a /etc/apt/sources.list && \
   apt-get install kibana
 
+# Install Plugins  
+RUN \
+  /usr/share/elasticsearch/bin/plugin install delete-by-query && \
+  /opt/kibana/bin/kibana plugin --install elastic/sense
+  
+# Create Tmp directory
+RUN \
+  mkdir /var/lib/elasticsearch/tmp && \
+  chown elasticsearch /var/lib/elasticsearch/tmp
+  
+RUN \
+  echo "cluster.name: snap" >> /etc/elasticsearch/elasticsearch.yml && \
+  echo "path.repo: /var/lib/elasticsearch_snapshots/" >> /etc/elasticsearch/elasticsearch.yml && \
+  echo "network.host: 0.0.0.0" >> /etc/elasticsearch/elasticsearch.yml && \
+  
 # Define mountable directories.
 VOLUME ["/data"]
 
@@ -43,8 +58,7 @@ ADD config/elasticsearch.yml /elasticsearch/config/elasticsearch.yml
 WORKDIR /data
 
 # Define default command.
-CMD ["/elasticsearch/bin/elasticsearch"]
-CMD ["/opt/kibana/bin/kibana"]
+CMD ["/elasticsearch/bin/elasticsearch && /opt/kibana/bin/kibana"]
 
 # Expose ports.
 #   - 9200: HTTP
