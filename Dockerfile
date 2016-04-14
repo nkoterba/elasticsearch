@@ -42,11 +42,13 @@ RUN \
 RUN \
   mkdir /var/lib/elasticsearch/tmp && \
   chown elasticsearch /var/lib/elasticsearch/tmp
-  
+
+# Setup snap variables  
 RUN \
-  echo "cluster.name: snap" >> /etc/elasticsearch/elasticsearch.yml && \
+  sed -i 's/# cluster.name: my-application/cluster.name: snap/' /etc/elasticsearch/elasticsearch.yml && \
   echo "path.repo: /var/lib/elasticsearch_snapshots/" >> /etc/elasticsearch/elasticsearch.yml && \
-  echo "network.host: 0.0.0.0" >> /etc/elasticsearch/elasticsearch.yml && \
+  sed -i 's/# network.host: 192.168.0.1/network.host: 0.0.0.0' /etc/elasticsearch/elasticsearch.yml && \
+  sed -i 's#\#ES_JAVA_OPTS=#ES_JAVA_OPTS="-Djava.io.tmpdir=/var/lib/elasticsearch/tmp/"#' /etc/init.d/elasticsearch
   
 # Define mountable directories.
 VOLUME ["/data"]
