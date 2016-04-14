@@ -4,6 +4,8 @@
 # https://github.com/dockerfile/elasticsearch
 #
 
+# ONLINE SOURCE: https://github.com/nkoterba/elasticsearch/edit/master/Dockerfile
+
 # Pull base image.
 FROM dockerfile/java:oracle-java8
 
